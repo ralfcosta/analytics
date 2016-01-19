@@ -16,12 +16,14 @@ Esse é meu relatório
 
 ```{r}
 moeda <- function(p){
-                    x <- runif(1)
-                    if (x < p){
-                                        1
-                    }else{
-                                        0
-                    }
+    
+    x <- runif(1)
+    
+    if (x < p){
+        1
+    }else{
+        0
+    }
 }
 
 moedas <- function(p,n){
