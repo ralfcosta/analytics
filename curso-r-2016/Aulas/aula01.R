@@ -52,6 +52,19 @@ for (i in seq) {
 rep(2, times=2)
 
 
+# exercises
+
+soma_dados <- function(n){
+    soma <- 0
+    for(i in 1:n){
+        if (i == 1){
+            x <- sum(sample(1:6, 3)) # errado!!!! não repete números
+        }else{
+            x <- c(x,sum(sample(1:6, 3)))
+        }
+    }
+    return(x)
+}
 
 
 

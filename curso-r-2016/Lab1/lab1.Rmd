@@ -1,0 +1,51 @@
+---
+title: "Laboratório 1"
+author: "Curso R de verão 2016"
+date: "18 de janeiro de 2016"
+output: html_document
+---
+
+
+# Curso de Verão 2016
+## Lab 01
+
+Ralf Lima da Costa
+
+```{r}
+moeda <- function(p){
+    x <- runif(1)
+    if (x < p){
+        1
+    }else{
+        0
+    }
+}
+
+moedas <- function(p,n){
+    x <- integer(length = n)
+    for (i in 1:n){
+        x[i] <- moeda(p)
+    }
+    return(x)
+}
+
+proporcao <- function(resultados){
+    
+    v1 <- length(resultados[resultados==1])
+    v0 <- length(resultados[resultados==0])
+    if (v0==0){
+        1
+    }else{
+        v1/(v1+v0)
+    }
+    
+}
+
+simulacao <- function(k,n,p){
+    x <- numeric(length = k)
+    for (i in 1:k){
+        x[i] <- proporcao(moedas(p,n))
+    }
+    x
+}
+```
