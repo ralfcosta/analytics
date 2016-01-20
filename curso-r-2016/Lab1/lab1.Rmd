@@ -1,23 +1,22 @@
 ---
-title: "Laboratório 1"
-author: "Curso R de verão 2016"
-date: "18 de janeiro de 2016"
+title: "Curso de Verão 2016 - Lab 01"
+author: "Ralf Lima da Costa"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
 
-# Curso de Verão 2016
-## Lab 01
+# Curso de Verão 2016 - Lab 01
 
-Ralf Lima da Costa
+## Funções
 
 ```{r}
 moeda <- function(p){
     x <- runif(1)
     if (x < p){
-        1
+        return(1)
     }else{
-        0
+        return(0)
     }
 }
 
@@ -30,15 +29,13 @@ moedas <- function(p,n){
 }
 
 proporcao <- function(resultados){
-    
     v1 <- length(resultados[resultados==1])
     v0 <- length(resultados[resultados==0])
     if (v0==0){
-        1
+        return(1)
     }else{
-        v1/(v1+v0)
+        return(v1/(v1+v0))
     }
-    
 }
 
 simulacao <- function(k,n,p){
@@ -46,6 +43,24 @@ simulacao <- function(k,n,p){
     for (i in 1:k){
         x[i] <- proporcao(moedas(p,n))
     }
-    x
+    return(x)
 }
 ```
+
+## Simulações Executadas
+
+```{r}
+hist(simulacao(k = 10, n = 10, p = 0.5))
+
+hist(simulacao(k = 100, n = 10, p = 0.5))
+
+hist(simulacao(k = 1000, n = 10, p = 0.5))
+
+hist(simulacao(k = 1000, n = 20, p = 0.5))
+
+hist(simulacao(k = 1000, n = 20, p = 0.7))
+
+hist(simulacao(k = 1000, n = 20, p = 0.3))
+
+```
+
