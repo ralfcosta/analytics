@@ -5,45 +5,25 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-
-# Curso de Verão 2016 - Lab 01
-
 ## Funções
 
 ```{r}
+library(magrittr)
+
 moeda <- function(p){
-    x <- runif(1)
-    if (x < p){
-        return(1)
-    }else{
-        return(0)
-    }
+    x <- runif(1) %>% "<"(p) %>% ifelse(1,0)
 }
 
 moedas <- function(p,n){
-    x <- integer(length = n)
-    for (i in 1:n){
-        x[i] <- moeda(p)
-    }
-    return(x)
+    sapply(1:n, function(x)moeda(p))
 }
 
 proporcao <- function(resultados){
-    v1 <- length(resultados[resultados==1])
-    v0 <- length(resultados[resultados==0])
-    if (v0==0){
-        return(1)
-    }else{
-        return(v1/(v1+v0))
-    }
+    sum(resultados)/length(resultados)
 }
 
 simulacao <- function(k,n,p){
-    x <- numeric(length = k)
-    for (i in 1:k){
-        x[i] <- proporcao(moedas(p,n))
-    }
-    return(x)
+    sapply(1:k, function(x)proporcao(moedas(p,n)))
 }
 ```
 
