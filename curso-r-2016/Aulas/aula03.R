@@ -6,7 +6,7 @@ library(tidyr)
 
 data(pnud_muni, package = 'abjutils')
 
-
+# dplyr
 # example of select
 pnud_muni %>%
     tbl_df() %>%
@@ -43,4 +43,26 @@ pnud_muni %>%
     group_by(ufn) %>%
     summarise(mean_lifeexp = sum(espvida*popt)/sum(popt)) %>%
     arrange(desc(mean_lifeexp))
+
+# tidyr
+# example of spread (columns, values)
+
+pnud_muni %>%
+    group_by(ano,ufn) %>%
+    summarise(populacao=sum(popt)) %>%
+    ungroup() %>%
+    spread(ano, populacao)
+
+#example of gather (column_names, column_values)
+
+pnud_muni %>%
+    filter(ano == 2010) %>%
+    select(ufn, municipio, starts_with('idhm_')) %>%
+    gather(tipo_idh, idh, starts_with('idhm_'))
+
+
+
+
+
+
 
