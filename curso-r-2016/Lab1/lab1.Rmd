@@ -30,17 +30,17 @@ simulacao <- function(k,n,p){
 ## Simulações Executadas
 
 ```{r}
-hist(simulacao(k = 10, n = 10, p = 0.5))
+hist(simulacao(k = 10, n = 10, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
 
-hist(simulacao(k = 100, n = 10, p = 0.5))
+hist(simulacao(k = 100, n = 10, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
 
-hist(simulacao(k = 1000, n = 10, p = 0.5))
+hist(simulacao(k = 1000, n = 10, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
 
-hist(simulacao(k = 1000, n = 20, p = 0.5))
+hist(simulacao(k = 1000, n = 20, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
 
-hist(simulacao(k = 1000, n = 20, p = 0.7))
+hist(simulacao(k = 1000, n = 20, p = 0.7), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
 
-hist(simulacao(k = 1000, n = 20, p = 0.3))
+hist(simulacao(k = 1000, n = 20, p = 0.3), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
 
 ```
 
