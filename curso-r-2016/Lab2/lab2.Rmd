@@ -6,5 +6,26 @@ output: html_document
 ---
 
 ```{r}
+install.packages("openxlsx")
+install.packages("readxl")
+
+library(openxlsx)
+library(readxl)
+library(dplyr)
+library(readr)
+library(httr)
+library(xml2)
+library(rvest)
+library(jsonlite)
+
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AABPDm6Tya9gAev6ECVYqzDya/pnud2_win.csv?dl=1"
+
+library(httr)
+x <- GET(link_file) %>% 
+  content('text') %>% 
+  read.csv2(link_file, nrows = 10)
+
+x
+
 ```
 
