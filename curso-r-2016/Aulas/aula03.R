@@ -45,7 +45,7 @@ pnud_muni %>%
     arrange(desc(mean_lifeexp))
 
 # tidyr
-# example of spread (columns, values)
+# example of spread (columns, values) row to column
 
 pnud_muni %>%
     group_by(ano,ufn) %>%
@@ -53,7 +53,7 @@ pnud_muni %>%
     ungroup() %>%
     spread(ano, populacao)
 
-#example of gather (column_names, column_values)
+#example of gather (column_names, column_values) column to row
 
 pnud_muni %>%
     filter(ano == 2010) %>%
