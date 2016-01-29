@@ -5,8 +5,21 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r}
-install.packages("nycflights13")
+```{r, results='hide', message=FALSE}
+library(nycflights13)
+library(dplyr)
+
+flights %>% tbl_df
+
+?flights
+
+flights %>% 
+    select(flight, month, year) %>%
+    filter(month == 1 & year == 2013)
+
+
+
+
 
 ```
 

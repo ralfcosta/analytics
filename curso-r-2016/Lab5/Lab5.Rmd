@@ -1,0 +1,18 @@
+---
+title: "Lab5"
+author: "Ralf Lima da Costa"
+date: "29 de janeiro de 2016"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(magrittr)
+library(tidyr)
+library(dplyr)
+library(jpeg)
+library(tree)
+```
+
+
+
