@@ -58,7 +58,8 @@ pnud_muni %>%
 pnud_muni %>%
     filter(ano == 2010) %>%
     select(ufn, municipio, starts_with('idhm_')) %>%
-    gather(tipo_idh, idh, starts_with('idhm_'))
+    gather(tipo_idh, idh, starts_with('idhm_')) %>%
+    head()
 
 
 
