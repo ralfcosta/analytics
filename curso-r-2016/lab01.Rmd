@@ -30,7 +30,7 @@ moedas <- function(p,n){
 }
 
 proporcao <- function()
-
-
-
-```
+                    
+                    
+                    
+                    ```
