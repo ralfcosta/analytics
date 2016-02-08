@@ -1,0 +1,145 @@
+---
+title: "Curso de Verão 2016 - Lab 03"
+author: "Ralf Lima da Costa"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Manipulando Dados
+
+
+```{r, results='hide', message=FALSE}
+library(nycflights13)
+library(dplyr)
+library(tidyr)
+
+flights %>% tbl_df
+
+?flights
+```
+
+## Filter
+
+```{r}
+flights %>% 
+    filter(month == 1 & year == 2013) -> flights_filter
+knitr::kable(flights_filter)
+
+flights %>% 
+    filter((month == 1 | month == 2) & year == 2013) -> flights_filter
+knitr::kable(flights_filter)
+
+flights %>% 
+    filter(distance > 1000) -> flights_filter
+knitr::kable(flights_filter)
+```
+
+## Select
+
+```{r}
+flights %>% 
+    select(month, dep_delay) %>% 
+    knitr::kable()
+
+flights %>% 
+    select(mes=month, atraso=dep_delay) %>% 
+    knitr::kable()
+
+flights %>% 
+    select(-tailnum, -origin, -dest) %>% 
+    knitr::kable()
+```
+
+## Mutate
+
+```{r}
+flights %>% 
+    mutate(
+        ganho_de_tempo=(dep_delay - arr_delay),
+        velocidade=(distance/air_time * 60)) %>%
+    select(flight, ganho_de_tempo, velocidade) %>% 
+    knitr::kable()
+
+flights %>% 
+    mutate(
+        hour2 = (air_time %/% 60) + 
+            hour + 
+            ifelse(round((air_time %% 60) + minute,0) > 59, 1, 0),
+        minute2 = ifelse(round((air_time %% 60) + minute,0) > 59,
+                         round((air_time %% 60) + minute,0) - 60, 
+                         round((air_time %% 60) +  minute,0)
+                         )
+        ) %>%
+    select(hour, hour2, minute, minute2, air_time) %>% 
+    knitr::kable()
+```
+
+## Summarise
+
+```{r}
+flights %>%
+    summarise(mean(distance)) %>% 
+    knitr::kable()
+
+flights %>%
+    group_by(month) %>%
+    summarise(mean(distance)) %>% 
+    knitr::kable()
+
+flights %>%
+    group_by(month) %>%
+    summarise(
+        media_air_time =mean(air_time, na.rm = TRUE),   
+        mediana_air_time =median(air_time, na.rm = TRUE), 
+        quartil_1_air_time = quantile(air_time, 0.25, na.rm = TRUE),
+        quartil_3_air_time = quantile(air_time, 0.75, na.rm = TRUE)
+        ) %>% 
+    knitr::kable()
+```
+
+## Arrange
+
+```{r}
+flights %>%
+    arrange(dep_delay) %>%
+    knitr::kable()
+
+flights %>%
+    arrange(desc(dep_delay)) %>%
+    knitr::kable()
+```
+
+## Spread
+
+```{r}
+flights %>%
+    group_by(day, month) %>%
+    summarise(media=mean(dep_delay, na.rm = TRUE)) %>%
+    ungroup() %>%
+    spread(month, media) %>%
+    knitr::kable()
+
+flights %>%
+    group_by(hour, day) %>%
+    summarise(media=mean(dep_delay, na.rm = TRUE)) %>%
+    ungroup() %>%
+    spread(day, media) %>%
+    knitr::kable()
+```
+
+## Gather
+
+```{r}
+flights %>%
+    group_by(day, month) %>%
+    summarise(media=mean(dep_delay, na.rm = TRUE)) %>%
+    ungroup() %>%
+    spread(month, media) %>%
+    gather(mes, delay, c(2:13)) %>%
+    knitr::kable()
+```
+
+
+
+
+

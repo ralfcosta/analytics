@@ -1,0 +1,46 @@
+---
+title: "Curso de Verão 2016 - Lab 01"
+author: "Ralf Lima da Costa"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Funções
+
+```{r}
+library(magrittr)
+
+moeda <- function(p){
+    x <- runif(1) %>% "<"(p) %>% ifelse(1,0)
+}
+
+moedas <- function(p,n){
+    sapply(1:n, function(x)moeda(p))
+}
+
+proporcao <- function(resultados){
+    sum(resultados)/length(resultados)
+}
+
+simulacao <- function(k,n,p){
+    sapply(1:k, function(x)proporcao(moedas(p,n)))
+}
+```
+
+## Simulações Executadas
+
+```{r}
+hist(simulacao(k = 10, n = 10, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
+
+hist(simulacao(k = 100, n = 10, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
+
+hist(simulacao(k = 1000, n = 10, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
+
+hist(simulacao(k = 1000, n = 20, p = 0.5), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
+
+hist(simulacao(k = 1000, n = 20, p = 0.7), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
+
+hist(simulacao(k = 1000, n = 20, p = 0.3), xlab = "Proportion for Given Probability", ylab = "Number of Simulations")
+
+```
+

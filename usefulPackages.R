@@ -1,0 +1,12 @@
+install.packages("openxlsx")
+install.packages("readxl")
+install.packages("dplyr")
+install.packages("readr")
+install.packages("httr")
+install.packages("xml2")
+install.packages("rvest")
+install.packages("jsonlite")
+install.packages("ggplot2")
+install.packages("tidyr")
+install.packages("sqliter")
+

@@ -1,0 +1,108 @@
+---
+title: "Curso de Verão 2016 - Lab 02"
+author: "Ralf Lima da Costa"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Libraries Utilizadas
+
+```{r ,results='hide', message=FALSE}
+library(magrittr)
+library(openxlsx)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(httr)
+library(xml2)
+library(rvest)
+library(jsonlite)
+library(sqliter)
+```
+
+## Coletando os Arquivos
+
+```{r ,eval=FALSE}
+# csv2
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AABPDm6Tya9gAev6ECVYqzDya/pnud2_win.csv?dl=1"
+download.file(link_file, "pnud2_win.csv")
+
+# csv
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AAC2cFsVUjRJ_JdOUenKWrLHa/pnud_win.csv?dl=1"
+download.file(link_file, "pnud_win.csv")
+
+# txt
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AACwkZkEmvlXJ4Po3LDSKZ6Aa/pnud_win.txt?dl=1"
+download.file(link_file, "pnud_win.txt")
+
+# xlsx
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AAB5MZpWKJ_rem6--_LYYOn2a/pnud_win.xlsx?dl=1"
+download.file(link_file, "pnud_win.xlsx")
+
+#rda
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AAA4AGMtaUCg6AuQ8seJe3iYa/pnud.rda?dl=1"
+download.file(link_file, "pnud.rda")
+
+# rds
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AAD8BJe5VBboOtamipv9Vg40a/pnud.rds?dl=1"
+download.file(link_file, "pnud.rds")
+
+# sqlite
+link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AACBc5rr109X8zNd3pe4Bfkda/pnud.sqlite?dl=1"
+download.file(link_file, "pnud.sqlite")
+
+```
+
+## Parte 1 - Lendo os Dados
+
+```{r ,results='asis'}
+pnud_csv2 <- read.csv2("pnud2_win.csv")
+knitr::kable(summary(pnud_csv2[,1:10]))
+
+pnud_csv <- read.csv("pnud_win.csv", sep = ",", header = T)
+knitr::kable(summary(pnud_csv[,1:10]))
+
+pnud_txt <- read.table("pnud_win.txt", sep = " ", header = T)
+knitr::kable(summary(pnud_txt[,1:10]))
+
+pnud_xlsx <- read.xlsx("pnud_win.xlsx")
+knitr::kable(summary(pnud_xlsx[,1:10]))
+
+pnud_rda <- load("pnud.rda", .GlobalEnv) %>% get()
+knitr::kable(summary(pnud_rda[,1:10]))
+
+pnud_rds <- readRDS("pnud.rds")
+knitr::kable(summary(pnud_rds[,1:10]))
+
+pnud_sqlite <- src_sqlite("pnud.sqlite") %>% tbl("pnud") %>% data.frame()
+knitr::kable(summary(pnud_sqlite[,1:10]))
+```
+
+## Parte 2 - Descritiva Básica
+
+```{r}
+link_pnud <- 'https://www.dropbox.com/s/seqctcl46qeemgu/pnud_simplificado.rds?dl=1'
+tmp <- tempfile()
+httr::GET(link_pnud, httr::write_disk(tmp))
+pnud <- readRDS(tmp)
+file.remove(tmp)
+
+pnud %>%
+    select(municipio, idhm, ano) %>%
+    filter(ano == 2010) %>%
+    arrange(desc(idhm)) %>%
+    filter(row_number() <= 6)
+
+pnud %>%
+    select(ufn, ano, espvida, pesotot) %>%
+    filter(ano==2000) %>%
+    group_by(ufn) %>%
+    summarise(mean_lifeexp = sum(espvida*pesotot)/sum(pesotot)) %>%
+    arrange(desc(mean_lifeexp)) %>%
+    filter(row_number() <= 1)
+
+
+
+```
+
