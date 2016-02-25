@@ -8,8 +8,8 @@
 #
 
 library(shiny)
-library(shinydashboard)
 library(ggplot2)
+library(magrittr)
 
 # Define UI for application that draws a histogram
 ui <- shinyUI(fluidPage(
@@ -19,7 +19,10 @@ ui <- shinyUI(fluidPage(
 
    # Sidebar with a slider input for number of bins
    sidebarLayout(
-      wellPanel(
+      sidebarPanel(
+          helpText("Selecione a variavel resposta e a covariavel para ajuste
+                   do gráfico."),
+
           selectInput(inputId =  "a",
                       label = "Variavel Resposta",
                       choices = list(
@@ -28,7 +31,8 @@ ui <- shinyUI(fluidPage(
                           "color" = "color",
                           "clarity" = "clarity",
                           "price" = "price"
-                      )
+                      ),
+                      selected = "carat"
           ),
           selectInput(inputId =  "b",
                       label = "Covariavel",
@@ -38,7 +42,8 @@ ui <- shinyUI(fluidPage(
                           "color" = "color",
                           "clarity" = "clarity",
                           "price" = "price"
-                      )
+                      ),
+                      selected = "price"
           )
       ),
 
@@ -55,8 +60,8 @@ ui <- shinyUI(fluidPage(
 server <- shinyServer(function(input, output) {
 
     output$id_graf <- renderPlot({
-        x <- input$b
         y <- input$a
+        x <- input$b
 
         lm(diamonds[[y]] ~ diamonds[[x]]) %>%
             coef() -> coeficiente
