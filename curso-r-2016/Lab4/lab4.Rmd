@@ -5,11 +5,10 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r, results='hide'}
+```{r, results='hide', warning=FALSE}
 library(magrittr)
 library(ggplot2)
 ```
-
 
 ##Geom_Point
 
@@ -40,7 +39,7 @@ diamonds %>%
 4. O aspecto estético obrigatório é x.
 
 5.
-```{r, warning=FALSE}
+```{r, warning=FALSE, error=FALSE, message=FALSE}
 diamonds %>%
     ggplot(aes(x=price)) +
     geom_histogram(colour = "white", fill = "blue")
@@ -48,7 +47,7 @@ diamonds %>%
 ```
 
 6.
-```{r}
+```{r, warning=FALSE, error=FALSE, message=FALSE}
 diamonds %>%
     ggplot(aes(x=price)) +
     geom_histogram(aes(y=..density..),colour = "white", fill = "blue") +
@@ -90,5 +89,81 @@ diamonds %>%
 ```
 
 ##Outras Bases de Dados
+
 12.
+```{r, results='hide', warning=FALSE, error=FALSE, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(lubridate)
+```
+
+```{r}
+economics %>%
+    ggplot(aes(x = unemploy, y = uempmed)) +
+    geom_point() +
+    labs(x = "Desempregados", y="Tempo Medio de Desemprego")
+```
+
+13.
+```{r}
+economics %>%
+    ggplot(aes(x = unemploy, y = uempmed)) +
+    geom_point(aes(color=year(date))) +
+    labs(x = "Desempregados", y="Tempo Medio de Desemprego")
+```
+
+14.
+```{r}
+economics %>%
+    ggplot(aes(x = date, y=unemploy)) +
+    geom_line()
+```
+
+15.
+```{r}
+economics %>%
+    select(unemploy, date) %>%
+    mutate(ano=year(date)) %>%
+    group_by(ano) %>%
+    summarise(unemploy_med = mean(unemploy)) %>%
+    ungroup() %>%
+    ggplot(aes(x = ano, y=unemploy_med)) +
+    geom_line() +
+    labs(x = "Ano", y = "Média de Desempregados")
+```
+
+16.
+```{r}
+economics %>%
+    select(unemploy, date) %>%
+    mutate(ano=year(date)) %>%
+    group_by(ano) %>%
+    summarise(unemploy_median = median(unemploy), 
+              unemploy_min = quantile(unemploy, probs = 0.01),
+              unemploy_max = quantile(unemploy, probs = 0.99)) %>%
+    ungroup() %>%
+    ggplot(aes(x = ano, y=unemploy_median)) +
+    geom_line() +
+    labs(x = "Ano", y = "Mediana de Desempregados") +
+    geom_ribbon(aes(ymin=unemploy_min,ymax=unemploy_max), alpha=.1)
+```
+
+17.
+```{r}
+economics %>%
+    mutate(taxa_desem=unemploy/pop) %>%
+    gather(group, value, taxa_desem, pce, psavert) %>%
+    group_by(group) %>%
+    ggplot(aes(x=date,y=value )) +
+    geom_line() +
+    facet_grid(group~., scales = "free")
+```
+
+
+
+
+
+
+
+
 
