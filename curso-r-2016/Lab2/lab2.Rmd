@@ -15,10 +15,12 @@ library(dplyr)
 library(tidyr)
 library(readr)
 library(httr)
+library(XML)
 library(xml2)
 library(rvest)
 library(jsonlite)
 library(sqliter)
+library(ggplot2)
 ```
 
 ## Coletando os Arquivos
@@ -52,6 +54,17 @@ download.file(link_file, "pnud.rds")
 link_file <- "https://www.dropbox.com/sh/c54yhhxuk82jdmp/AACBc5rr109X8zNd3pe4Bfkda/pnud.sqlite?dl=1"
 download.file(link_file, "pnud.sqlite")
 
+# html
+link_file <- "https://www.dropbox.com/s/nsf3ewq9nji77cm/pnud.html?dl=1"
+download.file(link_file, "pnud.html")
+
+# json
+link_file <- "https://www.dropbox.com/s/whlav3pgvrp7gff/pnud.json?dl=1"
+download.file(link_file, "pnud.json")
+
+# pnud simplificado
+link_file <- "https://www.dropbox.com/s/seqctcl46qeemgu/pnud_simplificado.rds?dl=1"
+download.file(link_file, "pnud_simplificado.rds")
 ```
 
 ## Parte 1 - Lendo os Dados
@@ -77,23 +90,35 @@ knitr::kable(summary(pnud_rds[,1:10]))
 
 pnud_sqlite <- src_sqlite("pnud.sqlite") %>% tbl("pnud") %>% data.frame()
 knitr::kable(summary(pnud_sqlite[,1:10]))
+
+pnud_html <- rvest::html("pnud.html") %>% rvest::html_table()
+pnud_html <- pnud_html[[1]]
+knitr::kable(summary(pnud_html[,1:10]))
+
+pnud_json <- fromJSON("pnud.json")
+knitr::kable(summary(pnud_json[,1:10]))
 ```
 
 ## Parte 2 - Descritiva Básica
 
-```{r}
-link_pnud <- 'https://www.dropbox.com/s/seqctcl46qeemgu/pnud_simplificado.rds?dl=1'
-tmp <- tempfile()
-httr::GET(link_pnud, httr::write_disk(tmp))
-pnud <- readRDS(tmp)
-file.remove(tmp)
+### carregando os dados
+```{r, results='hide', message=FALSE}
+pnud <- readRDS("pnud_simplificado.rds")
+```
 
+### Quais são os seis municípios com os maiores IDH municipais em 2010?
+
+```{r}
 pnud %>%
     select(municipio, idhm, ano) %>%
     filter(ano == 2010) %>%
     arrange(desc(idhm)) %>%
     filter(row_number() <= 6)
+```
 
+### Qual é a unidade federativa com menor expectativa de vida média, ponderada pela população dos municípios em 2000?
+
+```{r}
 pnud %>%
     select(ufn, ano, espvida, pesotot) %>%
     filter(ano==2000) %>%
@@ -101,8 +126,27 @@ pnud %>%
     summarise(mean_lifeexp = sum(espvida*pesotot)/sum(pesotot)) %>%
     arrange(desc(mean_lifeexp)) %>%
     filter(row_number() <= 1)
-
-
-
 ```
 
+### Quais são os municípios outliers com relação ao índice de Gini em 1991 e em 2010?
+
+```{r}
+pnud %>%
+    select(municipio, ano, gini) %>%
+    filter(ano==2000 | ano==1991) %>%
+    mutate(gini_mean = mean(gini, na.rm = F), gini_sd = sd(gini, na.rm = F)) %>%
+    filter((gini < (gini_mean - (gini_sd * 2))) | 
+               (gini > (gini_mean + (gini_sd * 2))))
+```
+
+### Renda per Capita x Expectativa de Vida
+
+```{r}
+pnud %>%
+    mutate(correlacao = cor(espvida, rdpc)) %>%
+    ggplot(aes(x = espvida, y = rdpc)) +
+    geom_point() +
+    geom_smooth(method = lm) +
+    geom_text(aes(x = 60, y = 1800, label = paste("r² = ", round(correlacao,2)))) +
+    labs(x="Expectativa de Vida",y="Renda per Capita")
+```
