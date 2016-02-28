@@ -5,13 +5,90 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r}
-
-
-
-
+```{r, results='hide'}
+library(magrittr)
+library(ggplot2)
 ```
 
 
+##Geom_Point
 
+1. Os aspectos estéticos obrigatórios são x e y.
+
+2.
+```{r}
+diamonds %>%
+    ggplot() +
+    geom_point(aes(price, carat)) +
+    xlab("Price") +
+    ylab("Carat")
+```
+
+3.
+```{r}
+diamonds %>%
+    ggplot(aes(price, carat)) +
+    geom_point() +
+    xlab("Price") +
+    ylab("Carat") +
+    facet_wrap(~clarity)
+```
+
+
+##Geom_Histogram
+
+4. O aspecto estético obrigatório é x.
+
+5.
+```{r, warning=FALSE}
+diamonds %>%
+    ggplot(aes(x=price)) +
+    geom_histogram(colour = "white", fill = "blue")
+
+```
+
+6.
+```{r}
+diamonds %>%
+    ggplot(aes(x=price)) +
+    geom_histogram(aes(y=..density..),colour = "white", fill = "blue") +
+    geom_density(alpha=.5, fill="yellow")
+```
+
+##Geom_Boxplot
+
+7. Os aspectos estéticos obrigátorios são lower, middle, upper, x, ymax, ymin.
+
+8.
+```{r}
+diamonds %>%
+    ggplot(aes(x=price)) +
+    geom_boxplot(aes(x=cut, color=cut, y=price)) +
+    xlab("Cut") +
+    ylab("Price")
+```
+
+9.
+```{r}
+diamonds %>%
+    ggplot(aes(x=cut, y=price, color=cut)) +
+    geom_boxplot() +
+    scale_color_manual(values = c("yellow","orange","red","brown","black")) +
+    xlab("Cut") +
+    ylab("Price")
+```
+
+##Geom_Bar
+
+10. O aspecto estético obrigatório é x.
+
+11.
+```{r}
+diamonds %>%
+    ggplot(aes(x=color)) +
+    geom_bar(fill="gray")
+```
+
+##Outras Bases de Dados
+12.
 
