@@ -12,9 +12,10 @@ output: html_document
 library(nycflights13)
 library(dplyr)
 library(tidyr)
+```
 
+```{r, eval=FALSE}
 flights %>% tbl_df
-
 ?flights
 ```
 
@@ -22,32 +23,26 @@ flights %>% tbl_df
 
 ```{r}
 flights %>% 
-    filter(month == 1 & year == 2013) -> flights_filter
-knitr::kable(flights_filter)
+    filter(month == 1 & year == 2013)
 
 flights %>% 
-    filter((month == 1 | month == 2) & year == 2013) -> flights_filter
-knitr::kable(flights_filter)
+    filter((month == 1 | month == 2) & year == 2013)
 
 flights %>% 
-    filter(distance > 1000) -> flights_filter
-knitr::kable(flights_filter)
+    filter(distance > 1000)
 ```
 
 ## Select
 
 ```{r}
 flights %>% 
-    select(month, dep_delay) %>% 
-    knitr::kable()
+    select(month, dep_delay)
 
 flights %>% 
-    select(mes=month, atraso=dep_delay) %>% 
-    knitr::kable()
+    select(mes=month, atraso=dep_delay)
 
 flights %>% 
-    select(-tailnum, -origin, -dest) %>% 
-    knitr::kable()
+    select(-tailnum, -origin, -dest)
 ```
 
 ## Mutate
@@ -57,8 +52,7 @@ flights %>%
     mutate(
         ganho_de_tempo=(dep_delay - arr_delay),
         velocidade=(distance/air_time * 60)) %>%
-    select(flight, ganho_de_tempo, velocidade) %>% 
-    knitr::kable()
+    select(flight, ganho_de_tempo, velocidade)
 
 flights %>% 
     mutate(
@@ -70,21 +64,18 @@ flights %>%
                          round((air_time %% 60) +  minute,0)
                          )
         ) %>%
-    select(hour, hour2, minute, minute2, air_time) %>% 
-    knitr::kable()
+    select(hour, hour2, minute, minute2, air_time)
 ```
 
 ## Summarise
 
 ```{r}
 flights %>%
-    summarise(mean(distance)) %>% 
-    knitr::kable()
+    summarise(mean(distance))
 
 flights %>%
     group_by(month) %>%
-    summarise(mean(distance)) %>% 
-    knitr::kable()
+    summarise(mean(distance))
 
 flights %>%
     group_by(month) %>%
@@ -93,20 +84,17 @@ flights %>%
         mediana_air_time =median(air_time, na.rm = TRUE), 
         quartil_1_air_time = quantile(air_time, 0.25, na.rm = TRUE),
         quartil_3_air_time = quantile(air_time, 0.75, na.rm = TRUE)
-        ) %>% 
-    knitr::kable()
+        )
 ```
 
 ## Arrange
 
 ```{r}
 flights %>%
-    arrange(dep_delay) %>%
-    knitr::kable()
+    arrange(dep_delay)
 
 flights %>%
-    arrange(desc(dep_delay)) %>%
-    knitr::kable()
+    arrange(desc(dep_delay))
 ```
 
 ## Spread
@@ -116,15 +104,13 @@ flights %>%
     group_by(day, month) %>%
     summarise(media=mean(dep_delay, na.rm = TRUE)) %>%
     ungroup() %>%
-    spread(month, media) %>%
-    knitr::kable()
+    spread(month, media)
 
 flights %>%
     group_by(hour, day) %>%
     summarise(media=mean(dep_delay, na.rm = TRUE)) %>%
     ungroup() %>%
-    spread(day, media) %>%
-    knitr::kable()
+    spread(day, media)
 ```
 
 ## Gather
@@ -135,11 +121,6 @@ flights %>%
     summarise(media=mean(dep_delay, na.rm = TRUE)) %>%
     ungroup() %>%
     spread(month, media) %>%
-    gather(mes, delay, c(2:13)) %>%
-    knitr::kable()
+    gather(mes, delay, c(2:13))
 ```
-
-
-
-
 
