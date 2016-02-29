@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r}
+```{r, message=FALSE}
 library(ggplot2)
 library(magrittr)
 library(tidyr)
@@ -13,6 +13,90 @@ library(dplyr)
 library(jpeg)
 library(tree)
 ```
+
+##Preparação do Banco de Dados
+```{r}
+img <- readJPEG(
+    "/Users/ralf/Documents/analytics/curso-r-2016/Lab5/purple_wave.jpg"
+    )
+img_dim <- dim(img)
+
+img_df <- data.frame(
+    x = rep(1:img_dim[2], each=img_dim[1]),
+    y = rep(img_dim[1]:1, img_dim[2]),
+    r = as.vector(img[,,1]),
+    g = as.vector(img[,,2]),
+    b = as.vector(img[,,3])
+) %>%
+    mutate(cor=rgb(r,g,b),
+           id = 1:n())
+
+set.seed(1) 
+
+img_df_parte1 <- img_df %>% 
+  sample_frac(3/5) %>%
+  mutate(b_backup = b,
+         b = 0,
+         cor = rgb(r, g, b))
+
+img_df_parte2 <- img_df %>% 
+    filter(!id%in%img_df_parte1$id)
+
+ggplot(data = img_df_parte1, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte1$cor) +
+  labs(x = "x", y = "y", title = "Imagem sem B (azul)") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+
+ggplot(data = img_df_parte2, aes(x = x, y = y)) + 
+  geom_point(colour = img_df_parte2$cor) +
+  labs(x = "x", y = "y", title = "Imagem sem B (azul)") +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+```
+
+Exercicio 1
+```{r}
+img_df_amostra <- img_df %>%
+    sample_n(500,replace=F)
+
+img_df_amostra %>%
+    select(x,y,r,g,b) %>%
+    cor() %>%
+    round(digits = 2)
+
+img_df_amostra %>%
+    select(x,y,r,g,b) %>%
+    pairs()
+```
+
+Exercicio 2
+```{r}
+img_df_amostra %>%
+    lm(b ~ r + g, data = .) -> lm_img
+
+summary(lm_img)
+summary(lm(mpg ~ wt, data=mtcars))
+
+plot(lm_img)
+```
+
+Exercício 3
+```{r}
+img_df_amostra %>%
+    tree(b ~ r - g, data = .) -> tree_img
+
+summary(tree_img)
+
+plot(tree_img)
+text(tree_img, pretty = 0)
+```
+
+Exercicio 4
+```{r}
+anova(lm_img)
+```
+
 
 
 
